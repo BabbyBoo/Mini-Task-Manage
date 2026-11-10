@@ -1,0 +1,40 @@
+/* Styles scoped — chỉ dính vào TaskDetailPageComponent */
+
+.back {
+  display: inline-block;
+  margin-bottom: 1rem;
+  color: #5c636e;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.back:hover {
+  color: #4f7cff;
+}
+
+h2 {
+  margin: 0 0 0.25rem;
+}
+
+.meta {
+  color: #8a8f98;
+  font-size: 0.85rem;
+  margin: 0 0 0.5rem;
+}
+
+.status {
+  font-weight: 600;
+  color: #b45309;
+}
+
+.status.done {
+  color: #1a7f4b;
+}
+
+.desc {
+  background: #ffffff;
+  border: 1px solid #e2e5ea;
+  border-radius: 8px;
+  padding: 1rem;
+  white-space: pre-line;
+}

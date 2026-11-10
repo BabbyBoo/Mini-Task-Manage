@@ -1,5 +1,9 @@
+<nav class="nav">
+  <a routerLink="/tasks" routerLinkActive="active">Danh sách</a>
+</nav>
+
 <main class="app">
   <h1>Mini Task Manager</h1>
-  <app-task-form />
-  <app-task-list />
+  <!-- Router thay nội dung trang vào đây theo URL -->
+  <router-outlet />
 </main>

@@ -1,0 +1,12 @@
+<section class="detail">
+  <a routerLink="/tasks" class="back">← Về danh sách</a>
+
+  @if (task(); as t) {
+    <h2>{{ t.title }}</h2>
+    <p class="meta">Tạo lúc: {{ t.createdAt | date: 'dd/MM/yyyy HH:mm' }}</p>
+    <p class="status" [class.done]="t.completed">
+      {{ t.completed ? '✓ Đã hoàn thành' : '• Đang làm' }}
+    </p>
+    <p class="desc">{{ t.description || '(Không có mô tả)' }}</p>
+  }
+</section>
