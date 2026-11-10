@@ -1,20 +1,25 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { TaskFilter } from '../../models/task.model';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { RouterLink } from '@angular/router';
+import { Task, TaskFilter } from '../../models/task.model';
 import { TaskService } from '../../services/task.service';
 
 @Component({
   selector: 'app-task-list',
-  imports: [],
+  imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './task-list.component.html',
   styleUrl: './task-list.component.scss'
 })
 export class TaskListComponent {
   readonly taskService = inject(TaskService);
+  private readonly fb = inject(FormBuilder);
 
-  /** Trạng thái bộ lọc — là dữ liệu GIAO DIỆN nên nằm ở component, không ở service */
+  /** Bộ lọc — dữ liệu giao diện nằm ở component */
   readonly filter = signal<TaskFilter>('all');
 
-  /** Danh sách sau khi lọc — tự tính lại mỗi khi tasks() hoặc filter() đổi */
+  /** id của task đang sửa — chỉ cho phép 1 task ở chế độ sửa cùng lúc */
+  readonly editingId = signal<string | null>(null);
+
   readonly filteredTasks = computed(() => {
     const all = this.taskService.tasks();
     if (this.filter() === 'active') return all.filter(t => !t.completed);
@@ -22,7 +27,36 @@ export class TaskListComponent {
     return all;
   });
 
+  /** Form sửa — giá trị được điền sẵn bằng patchValue khi bấm "Sửa" */
+  readonly editForm = this.fb.nonNullable.group({
+    title: ['', [Validators.required, Validators.minLength(3)]],
+    description: ['', [Validators.maxLength(200)]],
+  });
+
   setFilter(value: TaskFilter): void {
     this.filter.set(value);
+  }
+
+  startEdit(task: Task): void {
+    this.editingId.set(task.id);
+    this.editForm.patchValue({ title: task.title, description: task.description });
+  }
+
+  cancelEdit(): void {
+    this.editingId.set(null);
+    this.editForm.reset();
+  }
+
+  saveEdit(id: string): void {
+    if (this.editForm.invalid) return;
+    this.taskService.updateTask(id, this.editForm.getRawValue());
+    this.cancelEdit();
+  }
+
+  deleteTask(task: Task): void {
+    if (confirm(`Xóa công việc "${task.title}"?`)) {
+      this.taskService.deleteTask(task.id);
+      if (this.editingId() === task.id) this.cancelEdit();
+    }
   }
 }

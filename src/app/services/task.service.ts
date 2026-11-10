@@ -35,6 +35,20 @@ export class TaskService {
     this.save();
   }
 
+  /** Sửa tên + mô tả — spread tạo object MỚI, giữ nguyên id/completed/createdAt */
+  updateTask(id: string, changes: Pick<Task, 'title' | 'description'>): void {
+    this.tasks.update(list =>
+      list.map(t => (t.id === id ? { ...t, ...changes } : t))
+    );
+    this.save();
+  }
+
+  /** Xóa task — filter trả về mảng mới không còn phần tử bị xóa */
+  deleteTask(id: string): void {
+    this.tasks.update(list => list.filter(t => t.id !== id));
+    this.save();
+  }
+
   /** Đọc dữ liệu từ LocalStorage khi app khởi động */
   private load(): void {
     try {

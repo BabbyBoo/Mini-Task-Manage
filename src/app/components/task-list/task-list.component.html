@@ -13,16 +13,37 @@
   <ul>
     @for (task of filteredTasks(); track task.id) {
       <li class="task" [class.completed]="task.completed">
-        <div class="task-head">
-          <input type="checkbox" [checked]="task.completed"
-            (change)="taskService.toggleTask(task.id)" />
-          <span class="task-title">{{ task.title }}</span>
-          @if (task.completed) {
-            <span class="task-badge">✓ Hoàn thành</span>
+        @if (editingId() === task.id) {
+          <!-- CHẾ ĐỘ SỬA: form inline, giá trị đã điền sẵn bằng patchValue -->
+          <form [formGroup]="editForm" (ngSubmit)="saveEdit(task.id)" class="edit-form">
+            <input type="text" formControlName="title" />
+            <textarea formControlName="description" rows="2" placeholder="Mô tả"></textarea>
+            @if (editForm.controls.title.touched && editForm.controls.title.invalid) {
+              <small class="error">Tên cần tối thiểu 3 ký tự.</small>
+            }
+            <div class="task-actions">
+              <button type="submit" [disabled]="editForm.invalid" class="btn-save">Lưu</button>
+              <button type="button" (click)="cancelEdit()" class="btn-cancel">Hủy</button>
+            </div>
+          </form>
+        } @else {
+          <!-- CHẾ ĐỘ XEM -->
+          <div class="task-head">
+            <input type="checkbox" [checked]="task.completed"
+              (change)="taskService.toggleTask(task.id)" />
+            <span class="task-title">{{ task.title }}</span>
+            @if (task.completed) {
+              <span class="task-badge">✓ Hoàn thành</span>
+            }
+          </div>
+          @if (task.description) {
+            <span class="task-desc">{{ task.description }}</span>
           }
-        </div>
-        @if (task.description) {
-          <span class="task-desc">{{ task.description }}</span>
+          <div class="task-actions">
+            <a class="link-detail" [routerLink]="['/tasks', task.id]">Chi tiết</a>
+            <button type="button" class="btn-edit" (click)="startEdit(task)">Sửa</button>
+            <button type="button" class="btn-delete" (click)="deleteTask(task)">Xóa</button>
+          </div>
         }
       </li>
     } @empty {

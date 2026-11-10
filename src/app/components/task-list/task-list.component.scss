@@ -41,6 +41,53 @@
   margin-left: auto; /* đẩy badge sang phải cùng dòng */
 }
 
+/* Hành động trên mỗi task */
+.task-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  align-items: center;
+}
+
+.link-detail {
+  font-size: 0.85rem;
+  color: #4f7cff;
+  text-decoration: none;
+}
+
+.task-actions button {
+  font: inherit;
+  font-size: 0.8rem;
+  padding: 0.25rem 0.75rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-edit { background: #eef2ff; color: #3d63d6; }
+.btn-delete { background: #fdecec; color: #c62828; }
+.btn-save { background: #4f7cff; color: #ffffff; }
+.btn-cancel { background: #f0f1f4; color: #5c636e; }
+
+/* Form sửa inline */
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.edit-form input,
+.edit-form textarea {
+  font: inherit;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d3d7de;
+  border-radius: 6px;
+}
+
+.error {
+  color: #c62828;
+}
+
 /* Styles scoped — chỉ dính vào TaskListComponent */
 
 ul {
