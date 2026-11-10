@@ -1,0 +1,32 @@
+<section class="task-list">
+  <h2>Danh sách công việc</h2>
+
+  <div class="filters" role="group" aria-label="Lọc công việc">
+    <button type="button" [class.active]="filter() === 'all'"
+      (click)="setFilter('all')">Tất cả</button>
+    <button type="button" [class.active]="filter() === 'active'"
+      (click)="setFilter('active')">Đang làm</button>
+    <button type="button" [class.active]="filter() === 'completed'"
+      (click)="setFilter('completed')">Hoàn thành</button>
+  </div>
+
+  <ul>
+    @for (task of filteredTasks(); track task.id) {
+      <li class="task" [class.completed]="task.completed">
+        <div class="task-head">
+          <input type="checkbox" [checked]="task.completed"
+            (change)="taskService.toggleTask(task.id)" />
+          <span class="task-title">{{ task.title }}</span>
+          @if (task.completed) {
+            <span class="task-badge">✓ Hoàn thành</span>
+          }
+        </div>
+        @if (task.description) {
+          <span class="task-desc">{{ task.description }}</span>
+        }
+      </li>
+    } @empty {
+      <li class="empty">Chưa có công việc nào. Hãy thêm công việc đầu tiên nhé!</li>
+    }
+  </ul>
+</section>

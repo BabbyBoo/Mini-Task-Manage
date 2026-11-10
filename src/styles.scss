@@ -1,1 +1,17 @@
-/* You can add global styles to this file, and also import other style files */
+/* ============================================================
+   GLOBAL STYLES — áp dụng cho TOÀN bộ app
+   Những gì viết ở đây, mọi component đều thừa hưởng.
+   Dùng cho: font chữ, màu nền chung, reset mặc định của trình duyệt.
+   ============================================================ */
+
+* {
+  box-sizing: border-box; /* padding không làm phình to kích thước box */
+}
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', system-ui, -apple-system, Roboto, sans-serif;
+  background-color: #f4f5f7;
+  color: #1f2430;
+  line-height: 1.5;
+}

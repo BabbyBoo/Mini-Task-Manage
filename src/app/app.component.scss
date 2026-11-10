@@ -1,0 +1,17 @@
+/* ============================================================
+   STYLES CỦA RIÊNG AppComponent
+   Nhờ "View Encapsulation", những gì viết ở đây CHỈ dính vào
+   các phần tử nằm trong template của component này —
+   không "chảy" sang component khác.
+   ============================================================ */
+
+.app {
+  max-width: 640px;   /* khối nội dung không quá rộng trên màn lớn */
+  margin: 0 auto;     /* căn giữa theo chiều ngang */
+  padding: 1.5rem 1rem;
+}
+
+h1 {
+  margin-top: 0;
+  font-size: 1.5rem;
+}

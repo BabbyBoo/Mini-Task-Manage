@@ -1,0 +1,95 @@
+/* Bộ lọc */
+.filters {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.filters button {
+  font: inherit;
+  font-size: 0.85rem;
+  padding: 0.3rem 0.9rem;
+  border: 1px solid #d3d7de;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #5c636e;
+  cursor: pointer;
+}
+
+.filters button.active {
+  background: #4f7cff;
+  border-color: #4f7cff;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* Dòng đầu của task: checkbox + title + badge */
+.task-head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.task-head input[type='checkbox'] {
+  width: 1.05rem;
+  height: 1.05rem;
+  accent-color: #4f7cff;
+  cursor: pointer;
+}
+
+.task-badge {
+  margin-left: auto; /* đẩy badge sang phải cùng dòng */
+}
+
+/* Styles scoped — chỉ dính vào TaskListComponent */
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.task {
+  background: #ffffff;
+  border: 1px solid #e2e5ea;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+/* Khi li có class "completed" (đặt bằng [class.completed]) thì áp dụng */
+.task.completed .task-title {
+  text-decoration: line-through;
+  color: #8a8f98;
+}
+
+.task-title {
+  font-weight: 600;
+}
+
+.task-desc {
+  color: #5c636e;
+  font-size: 0.9rem;
+}
+
+.task-badge {
+  align-self: flex-start;
+  background: #e6f6ec;
+  color: #1a7f4b;
+  font-size: 0.75rem;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+}
+
+.empty {
+  text-align: center;
+  color: #8a8f98;
+  padding: 2rem 0;
+  border: 1px dashed #d3d7de;
+  border-radius: 8px;
+}

@@ -1,0 +1,53 @@
+import { Injectable, signal } from '@angular/core';
+import { Task } from '../models/task.model';
+
+const STORAGE_KEY = 'mini-task-manager.tasks';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class TaskService {
+  /** Nguồn dữ liệu duy nhất của app — component chỉ đọc qua service này */
+  readonly tasks = signal<Task[]>([]);
+
+  constructor() {
+    this.load();
+  }
+
+  /** Thêm công việc mới — sinh id, đặt trạng thái mặc định, ghi xuống LocalStorage */
+  addTask(data: Pick<Task, 'title' | 'description'>): void {
+    const newTask: Task = {
+      id: crypto.randomUUID(),
+      title: data.title,
+      description: data.description,
+      completed: false,
+      createdAt: Date.now(),
+    };
+    this.tasks.update(list => [...list, newTask]);
+    this.save();
+  }
+
+  /** Đảo trạng thái hoàn thành của 1 task — cập nhật BẤT BIẾN (mảng/object mới) */
+  toggleTask(id: string): void {
+    this.tasks.update(list =>
+      list.map(t => (t.id === id ? { ...t, completed: !t.completed } : t))
+    );
+    this.save();
+  }
+
+  /** Đọc dữ liệu từ LocalStorage khi app khởi động */
+  private load(): void {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      this.tasks.set(raw ? (JSON.parse(raw) as Task[]) : []);
+    } catch {
+      // JSON hỏng hoặc LocalStorage bị chặn → bắt đầu với danh sách rỗng
+      this.tasks.set([]);
+    }
+  }
+
+  /** Ghi danh sách hiện tại xuống LocalStorage — gọi sau MỖI lần đổi dữ liệu */
+  private save(): void {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(this.tasks()));
+  }
+}
