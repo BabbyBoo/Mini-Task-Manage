@@ -49,13 +49,32 @@ export class TaskService {
     this.save();
   }
 
+  /** H1: kiểm chứng 1 giá trị bất kỳ có đúng hình dạng Task không (type guard) */
+  private isTask(value: unknown): value is Task {
+    if (value === null || typeof value !== 'object') return false;
+    const v = value as Record<string, unknown>;
+    return (
+      typeof v['id'] === 'string' &&
+      typeof v['title'] === 'string' &&
+      typeof v['description'] === 'string' &&
+      typeof v['completed'] === 'boolean' &&
+      typeof v['createdAt'] === 'number'
+    );
+  }
+
   /** Đọc dữ liệu từ LocalStorage khi app khởi động */
   private load(): void {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      this.tasks.set(raw ? (JSON.parse(raw) as Task[]) : []);
+      if (!raw) {
+        this.tasks.set([]);
+        return;
+      }
+      const parsed: unknown = JSON.parse(raw);
+      // H1: chỉ nhận MẢNG, và chỉ giữ item đúng hình dạng Task — loại bỏ dữ liệu rác
+      this.tasks.set(Array.isArray(parsed) ? parsed.filter(item => this.isTask(item)) : []);
     } catch {
-      // JSON hỏng hoặc LocalStorage bị chặn → bắt đầu với danh sách rỗng
+      // JSON hỏng cú pháp hoặc LocalStorage bị chặn → bắt đầu với danh sách rỗng
       this.tasks.set([]);
     }
   }
