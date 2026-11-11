@@ -32,6 +32,18 @@ export class TaskListComponent {
     return all;
   });
 
+  /** M1: thông báo khi danh sách rỗng — đúng ngữ cảnh theo bộ lọc đang chọn */
+  readonly emptyMessage = computed(() => {
+    switch (this.filter()) {
+      case 'active':
+        return 'Không còn công việc nào đang làm. Tuyệt vời! 🎉';
+      case 'completed':
+        return 'Chưa có công việc nào hoàn thành.';
+      default:
+        return 'Chưa có công việc nào. Hãy thêm công việc đầu tiên nhé!';
+    }
+  });
+
   /** Form sửa — giá trị được điền sẵn bằng patchValue khi bấm "Sửa" (M2: dùng chung validators) */
   readonly editForm = this.fb.nonNullable.group({
     title: ['', TASK_TITLE_VALIDATORS],
