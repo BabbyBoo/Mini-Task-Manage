@@ -18,8 +18,8 @@ export class TaskService {
   addTask(data: Pick<Task, 'title' | 'description'>): void {
     const newTask: Task = {
       id: crypto.randomUUID(),
-      title: data.title,
-      description: data.description,
+      title: data.title.trim(),
+      description: data.description.trim(),
       completed: false,
       createdAt: Date.now(),
     };
@@ -37,8 +37,10 @@ export class TaskService {
 
   /** Sửa tên + mô tả — spread tạo object MỚI, giữ nguyên id/completed/createdAt */
   updateTask(id: string, changes: Pick<Task, 'title' | 'description'>): void {
+    // H2: trim ngay ở tầng dữ liệu — mọi caller đều nhận dữ liệu sạch
+    const clean = { title: changes.title.trim(), description: changes.description.trim() };
     this.tasks.update(list =>
-      list.map(t => (t.id === id ? { ...t, ...changes } : t))
+      list.map(t => (t.id === id ? { ...t, ...clean } : t))
     );
     this.save();
   }

@@ -1,7 +1,12 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { Task, TaskFilter } from '../../models/task.model';
+import {
+  Task,
+  TaskFilter,
+  TASK_DESCRIPTION_VALIDATORS,
+  TASK_TITLE_VALIDATORS,
+} from '../../models/task.model';
 import { TaskService } from '../../services/task.service';
 
 @Component({
@@ -27,10 +32,10 @@ export class TaskListComponent {
     return all;
   });
 
-  /** Form sửa — giá trị được điền sẵn bằng patchValue khi bấm "Sửa" */
+  /** Form sửa — giá trị được điền sẵn bằng patchValue khi bấm "Sửa" (M2: dùng chung validators) */
   readonly editForm = this.fb.nonNullable.group({
-    title: ['', [Validators.required, Validators.minLength(3)]],
-    description: ['', [Validators.maxLength(200)]],
+    title: ['', TASK_TITLE_VALIDATORS],
+    description: ['', TASK_DESCRIPTION_VALIDATORS],
   });
 
   setFilter(value: TaskFilter): void {

@@ -1,5 +1,6 @@
 import { Component, inject } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { TASK_DESCRIPTION_VALIDATORS, TASK_TITLE_VALIDATORS } from '../../models/task.model';
 import { TaskService } from '../../services/task.service';
 
 @Component({
@@ -12,10 +13,10 @@ export class TaskFormComponent {
   private readonly taskService = inject(TaskService);
   private readonly fb = inject(FormBuilder);
 
-  /** Form có 2 control: title (bắt buộc, tối thiểu 3 ký tự), description (tối đa 200 ký tự) */
+  /** Form có 2 control — quy tắc validation dùng chung từ task.model (M2) */
   readonly form = this.fb.nonNullable.group({
-    title: ['', [Validators.required, Validators.minLength(3)]],
-    description: ['', [Validators.maxLength(200)]],
+    title: ['', TASK_TITLE_VALIDATORS],
+    description: ['', TASK_DESCRIPTION_VALIDATORS],
   });
 
   submit(): void {
