@@ -1,59 +1,88 @@
-# MiniTaskManager
+# Mini Task Manager
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.27.
+Ứng dụng quản lý công việc nhỏ xây bằng **Angular 19** — thực hành các khái niệm cốt lõi của Angular trước khi tham gia dự án lớn: standalone components, signals, Reactive Forms, Router và LocalStorage (không cần backend).
 
-## Development server
+> Angular 19 · TypeScript · SCSS · Reactive Forms · Angular Router · LocalStorage
 
-To start a local development server, run:
+## ✨ Tính năng
 
-```bash
-ng serve
-```
+- [x] Hiển thị danh sách công việc (control flow `@for` / `@empty` / `@if`)
+- [x] Thêm công việc mới — form validate: bắt buộc, tối thiểu 3 ký tự, chặn chuỗi chỉ toàn dấu cách
+- [x] Sửa tên & mô tả — edit inline với giá trị điền sẵn, chỉ 1 task ở chế độ sửa cùng lúc
+- [x] Đánh dấu hoàn thành / chưa hoàn thành
+- [x] Lọc theo trạng thái: Tất cả / Đang làm / Hoàn thành
+- [x] Xóa công việc (có xác nhận)
+- [x] Lưu dữ liệu bằng LocalStorage — refresh không mất; dữ liệu đọc từ kho được **validate hình dạng** trước khi dùng
+- [x] Router 2 trang: `/tasks` và `/tasks/:id` (chi tiết), URL sai tự về danh sách
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## 🚀 Chạy dự án
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+**Yêu cầu:** Node.js ≥ 18.19 (khuyến nghị 20/22), npm ≥ 10.
 
 ```bash
-ng generate --help
+# 1. Cài dependency (theo lockfile)
+npm ci        # hoặc: npm install
+
+# 2. Chạy dev server → mở http://localhost:4200
+npm start
+
+# 3. Build production → thư mục dist/
+npm run build
 ```
 
-## Building
+## 🗂️ Cấu trúc thư mục
 
-To build the project run:
-
-```bash
-ng build
+```
+src/app/
+├── models/
+│   └── task.model.ts        # Interface Task, type TaskFilter, validators dùng chung
+├── services/
+│   └── task.service.ts      # Nguồn dữ liệu DUY NHẤT: signal<Task[]> + đọc/ghi LocalStorage
+├── components/              # Feature components — mỗi component một nhiệm vụ
+│   ├── task-form/           #   Form thêm mới (Reactive Forms + validation)
+│   └── task-list/           #   Danh sách: lọc, toggle, sửa inline, xóa
+├── pages/                   # Tầng trang — chỉ lo "bố trí" các component
+│   ├── task-list-page/      #   Trang chính = form + danh sách
+│   └── task-detail-page/    #   Trang chi tiết, đọc :id từ URL qua input.required()
+├── app.component.*          # Shell: menu + <router-outlet />
+├── app.config.ts            # Providers: provideRouter + withComponentInputBinding
+└── app.routes.ts            # Bản đồ URL → Component (redirect + wildcard)
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## 🧭 Luồng dữ liệu
 
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
+```
+User thao tác (click/gõ)
+   → Component (template binding, signal cục bộ như filter/editingId)
+      → TaskService (addTask / toggleTask / updateTask / deleteTask)
+         → cập nhật bất biến → signal<Task[]> phát thông báo
+            → computed (filteredTasks) + template tự vẽ lại
+         → save() ghi LocalStorage
+F5 / mở lại trang
+   → TaskService.load() đọc kho → validate từng item → state ban đầu
 ```
 
-## Running end-to-end tests
+Nguyên tắc nổi bật trong code:
 
-For end-to-end (e2e) testing, run:
+- **Cập nhật bất biến** — mọi thay đổi qua `map`/`filter`/spread, không mutation trực tiếp
+- **Phân tầng rõ ràng** — dữ liệu dùng chung ở `Service`, trạng thái giao diện ở `Component`, trang chỉ lo bố trí ở `pages/`
+- **Type guard** — dữ liệu đọc từ LocalStorage được kiểm chứng từng item trước khi tin tưởng
 
-```bash
-ng e2e
-```
+## 📌 Quy ước Git
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+- Commit theo [Conventional Commits](https://www.conventionalcommits.org): `feat:`, `fix:`, `docs:`, `chore:`
+- Mỗi tính năng / nhóm vá lỗi = 1 commit riêng, thông điệp mô tả đúng phạm vi thay đổi
 
-## Additional Resources
+## 📚 Tài liệu dự án
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+| File | Nội dung |
+|------|----------|
+| [`PLAN-3H.md`](./PLAN-3H.md) | Lộ trình xây app trong 3 giờ, chia 8 giai đoạn có kết quả demo được |
+| [`ROADMAP.md`](./ROADMAP.md) | Lộ trình học sâu 4 tuần: từng khái niệm Angular 19 + bài tập tự luyện |
+| [`PROMPTS.md`](./PROMPTS.md) | Thư viện prompt làm việc với AI khi học code |
+
+## 📝 Ghi chú kỹ thuật
+
+- Dữ liệu chỉ lưu trên **trình duyệt của bạn** (LocalStorage) — không có backend, không gửi đi đâu cả
+- Key lưu trữ: `mini-task-manager.tasks` (xóa key trong DevTools → Application để reset dữ liệu)
+- Build production nằm ở `dist/mini-task-manager` — deploy được lên bất kỳ static hosting nào (Vercel, Netlify, GitHub Pages)
